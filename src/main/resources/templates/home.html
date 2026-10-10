@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Overview')}"></head>
+<body>
+<div class="app">
+  <aside th:replace="~{fragments/base :: sidebar('overview')}"></aside>
+
+  <main class="content">
+    <header class="page-head">
+      <h1 id="welcome" th:text="'Welcome, ' + ${user.fullName}">Welcome</h1>
+      <p class="muted" th:text="'Signed in as ' + ${roleLabel}">Signed in as Role</p>
+    </header>
+
+    <section aria-labelledby="stages-title">
+      <h2 id="stages-title">Applications by stage</h2>
+      <ol id="stage-strip" class="stages">
+        <li th:each="s : ${stages}" class="stage" th:classappend="${'stage-' + s.key}">
+          <span class="stage-count" th:text="${s.count}">0</span>
+          <span class="stage-label" th:text="${s.label}">Submitted</span>
+        </li>
+      </ol>
+      <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once an applicant submits one.</p>
+    </section>
+
+    <section aria-labelledby="system-title">
+      <h2 id="system-title">System check</h2>
+      <dl class="facts">
+        <dt>Database</dt>
+        <dd id="db-status">Connected, <span th:text="${userCount}">3</span> user accounts</dd>
+        <dt>Health endpoint</dt>
+        <dd><a id="health-link" th:href="@{/actuator/health}">/actuator/health</a></dd>
+      </dl>
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Sign in')}"></head>
+<body class="auth">
+<div class="auth-wrap">
+  <section class="auth-intro">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7 3h14l6 6v20H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M11 18l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>KYC Portal</span>
+    </div>
+    <h1>Check identity documents, one stage at a time.</h1>
+    <p>Applicants submit. Verifiers review. Every decision is recorded.</p>
+  </section>
+
+  <section class="auth-form">
+    <h2>Sign in</h2>
+    <p id="login-error" class="notice error" role="alert" th:if="${param.error}">Wrong username or password. Check both and try again.</p>
+    <p id="logout-message" class="notice info" th:if="${param.logout}">You have signed out.</p>
+    <form th:action="@{/login}" method="post">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button id="login-button" type="submit" class="btn">Sign in</button>
+    </form>
+    <p class="hint">Demo accounts: applicant1, verifier1, admin1</p>
+  </section>
+</div>
+</body>
+</html>

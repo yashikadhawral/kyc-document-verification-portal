@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('No access')}"></head>
+<body class="plain">
+<main class="plain-box">
+  <h1>You don't have access to this page</h1>
+  <p class="muted">Your role does not allow this action. Go back to the overview, or sign in with a different account.</p>
+  <a class="btn" th:href="@{/}">Back to overview</a>
+</main>
+</body>
+</html>

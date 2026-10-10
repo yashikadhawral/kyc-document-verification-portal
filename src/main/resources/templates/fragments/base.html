@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' | KYC Portal'">KYC Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&amp;family=Source+Serif+4:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/portal.css}">
+</head>
+<body>
+<aside class="sidebar" th:fragment="sidebar(active)">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M7 3h14l6 6v20H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M11 18l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>KYC Portal</span>
+  </div>
+  <nav aria-label="Main">
+    <a id="nav-overview" class="nav-link" th:href="@{/}" th:classappend="${active == 'overview'} ? 'is-active'">Overview</a>
+  </nav>
+  <div class="who">
+    <div id="current-user" class="who-name" th:text="${user.fullName}">Full name</div>
+    <div id="current-role" class="who-role" th:text="${roleLabel}">Role</div>
+    <form th:action="@{/logout}" method="post">
+      <button id="logout-button" type="submit" class="link-button">Sign out</button>
+    </form>
+  </div>
+</aside>
+</body>
+</html>

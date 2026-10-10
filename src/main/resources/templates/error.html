@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Error')}"></head>
+<body class="plain">
+<main class="plain-box">
+  <h1 th:text="${status == 404} ? 'We could not find that page' : 'Something went wrong'">Something went wrong</h1>
+  <p class="muted" th:text="${status == 404} ? 'The address may be mistyped, or the page may have moved.' : 'Try again in a moment. If it keeps happening, check the application log.'">Try again in a moment.</p>
+  <a class="btn" th:href="@{/}">Back to overview</a>
+</main>
+</body>
+</html>
