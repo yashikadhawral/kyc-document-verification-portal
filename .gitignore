@@ -1,0 +1,30 @@
+# Build output
+target/
+*.war
+*.jar
+*.class
+!.mvn/wrapper/maven-wrapper.jar
+
+# Uploaded documents and local data
+uploads/
+*.mv.db
+*.trace.db
+
+# Logs
+*.log
+logs/
+
+# IDE and OS files
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.factorypath
+.settings/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.pem
