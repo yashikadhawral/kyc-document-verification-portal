@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Application')}"></head>
+<body>
+<div class="app">
+  <aside th:replace="~{fragments/base :: sidebar('records')}"></aside>
+
+  <main class="content">
+    <header class="page-head">
+      <p id="reference" class="muted" th:text="'Reference ' + ${record.referenceNo}">Reference</p>
+      <h1 th:text="${record.fullName}">Full name</h1>
+      <span id="status-stamp" class="stamp" th:classappend="${'stamp-' + record.status.cssKey}"
+            th:text="${record.status.label}">Submitted</span>
+    </header>
+
+    <p id="created-message" class="notice info" th:if="${param.created}">
+      Application submitted. Keep the reference number to follow its progress.
+    </p>
+
+    <section aria-labelledby="details-title">
+      <h2 id="details-title">Details</h2>
+      <dl class="facts">
+        <dt>Date of birth</dt>
+        <dd th:text="${dateOfBirth}">01 Jan 2000</dd>
+        <dt>ID</dt>
+        <dd th:text="${record.idType.label + ' ' + record.maskedIdNumber}">PAN card ******234F</dd>
+        <dt>Document</dt>
+        <dd th:text="${record.documentName}">document.pdf</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="history-title">
+      <h2 id="history-title">Status history</h2>
+      <ol id="history" class="timeline">
+        <li th:each="h : ${history}">
+          <span class="timeline-change" th:text="${h.change}">Submitted</span>
+          <span class="muted" th:text="${h.when + ' by ' + h.by}">01 Jan 2026, 10:00 by applicant1</span>
+          <span class="muted" th:if="${h.note}" th:text="${h.note}">Note</span>
+        </li>
+      </ol>
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -258,3 +258,47 @@ input:focus { border-color: var(--brand); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- forms and record pages ---------- */
+.form { max-width: 560px; }
+.field { margin-bottom: 1.25rem; }
+.field label { margin-top: 0; }
+input[type="date"], select, input[type="file"] {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #AEB8C2;
+  border-radius: var(--radius);
+  background: var(--white);
+  font: inherit;
+}
+select:focus, input[type="date"]:focus { border-color: var(--brand); }
+.hint-text { margin: 0.35rem 0 0; color: var(--ink-soft); font-size: 0.9rem; }
+.field-error { margin: 0.35rem 0 0; color: var(--rejected); font-size: 0.92rem; font-weight: 500; }
+.form-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: 1.75rem; }
+.form-actions .btn { margin-top: 0; }
+.btn-link { color: var(--ink-soft); }
+
+.page-head .stamp {
+  margin-top: 0.5rem;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.95rem;
+  transform: rotate(-2deg);
+}
+.timeline {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  border-left: 2px solid var(--line);
+}
+.timeline li { position: relative; padding: 0 0 1.1rem 1.25rem; }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 0.45rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+.timeline-change { display: block; font-weight: 600; }

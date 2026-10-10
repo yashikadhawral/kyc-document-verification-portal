@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('New application')}"></head>
+<body>
+<div class="app">
+  <aside th:replace="~{fragments/base :: sidebar('new')}"></aside>
+
+  <main class="content">
+    <header class="page-head">
+      <h1>New application</h1>
+      <p class="muted">Enter your details exactly as they appear on your ID, then attach a clear copy of the document.</p>
+    </header>
+
+    <form id="kyc-form" class="form" th:action="@{/records}" th:object="${form}"
+          method="post" enctype="multipart/form-data" novalidate>
+
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" type="text" th:field="*{fullName}" autocomplete="name">
+        <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="dateOfBirth">Date of birth</label>
+        <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}">
+        <p class="field-error" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="idType">ID type</label>
+        <select id="idType" th:field="*{idType}">
+          <option value="">Choose an ID type</option>
+          <option th:each="t : ${idTypes}" th:value="${t.name()}" th:text="${t.label}">PAN card</option>
+        </select>
+        <p class="field-error" th:if="${#fields.hasErrors('idType')}" th:errors="*{idType}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="idNumber">ID number</label>
+        <input id="idNumber" type="text" th:field="*{idNumber}" autocomplete="off">
+        <p class="hint-text">While testing, use dummy numbers only. Never enter a real ID number.</p>
+        <p class="field-error" th:if="${#fields.hasErrors('idNumber')}" th:errors="*{idNumber}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="document">Document</label>
+        <input id="document" name="document" type="file" accept=".pdf,.jpg,.jpeg,.png">
+        <p class="hint-text">PDF, JPG or PNG, up to 5 MB. You will need to choose the file again if the form shows an error.</p>
+        <p id="document-error" class="field-error" th:if="${fileError}" th:text="${fileError}">Error</p>
+      </div>
+
+      <div class="form-actions">
+        <button id="submit-application" type="submit" class="btn">Submit application</button>
+        <a class="btn-link" th:href="@{/}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</div>
+</body>
+</html>
