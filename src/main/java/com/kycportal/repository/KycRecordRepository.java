@@ -21,4 +21,7 @@ public interface KycRecordRepository extends JpaRepository<KycRecord, Long> {
 
     @Query("select r from KycRecord r join fetch r.applicant where r.id = :id")
     Optional<KycRecord> findWithApplicantById(@Param("id") Long id);
+
+    @Query("select r from KycRecord r join fetch r.applicant order by r.createdAt desc")
+    List<KycRecord> findAllWithApplicant();
 }

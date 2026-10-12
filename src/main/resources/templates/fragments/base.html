@@ -20,6 +20,7 @@
   </div>
   <nav aria-label="Main">
     <a id="nav-new" class="nav-link" th:if="${user.role.name() == 'APPLICANT'}" th:href="@{/records/new}" th:classappend="${active == 'new'} ? 'is-active'">New application</a>
+    <a id="nav-records" class="nav-link" th:href="@{/records}" th:classappend="${active == 'records'} ? 'is-active'" th:text="${user.role.name() == 'APPLICANT'} ? 'My applications' : 'All applications'">Applications</a>
     <a id="nav-overview" class="nav-link" th:href="@{/}" th:classappend="${active == 'overview'} ? 'is-active'">Overview</a>
   </nav>
   <div class="who">

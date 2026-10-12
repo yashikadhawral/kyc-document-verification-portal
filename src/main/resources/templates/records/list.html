@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Applications')}"></head>
+<body>
+<div class="app">
+  <aside th:replace="~{fragments/base :: sidebar('records')}"></aside>
+
+  <main class="content">
+    <header class="page-head">
+      <h1 th:text="${user.role.name() == 'APPLICANT'} ? 'My applications' : 'All applications'">Applications</h1>
+      <p id="result-count" class="muted"
+         th:text="${rows.size() == 1 ? '1 application' : rows.size() + ' applications'}">0 applications</p>
+    </header>
+
+    <form id="search-form" class="toolbar" th:action="@{/records}" method="get">
+      <div class="field">
+        <label for="q">Search</label>
+        <input id="q" name="q" type="text" th:value="${q}" placeholder="Name or reference number">
+      </div>
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="">All statuses</option>
+          <option th:each="s : ${statuses}" th:value="${s.name()}" th:text="${s.label}"
+                  th:selected="${selectedStatus != null and selectedStatus == s}">Submitted</option>
+        </select>
+      </div>
+      <button id="search-button" type="submit" class="btn">Search</button>
+      <a class="btn-link" th:href="@{/records}">Clear</a>
+    </form>
+
+    <p id="no-records" class="empty" th:if="${rows.isEmpty()}">No records found.</p>
+
+    <div class="table-wrap" th:unless="${rows.isEmpty()}">
+      <table id="records-table" class="records">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Name</th>
+            <th th:if="${user.role.name() != 'APPLICANT'}">Applicant</th>
+            <th>Status</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="r : ${rows}">
+            <td class="ref"><a th:href="@{/records/{id}(id=${r.id})}" th:text="${r.referenceNo}">KYC-20260101-ABCD</a></td>
+            <td th:text="${r.fullName}">Full name</td>
+            <td th:if="${user.role.name() != 'APPLICANT'}" th:text="${r.applicant.fullName}">Applicant</td>
+            <td><span class="stamp" th:classappend="${'stamp-' + r.status.cssKey}" th:text="${r.status.label}">Submitted</span></td>
+            <td th:text="${r.createdDate}">2026-01-01</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

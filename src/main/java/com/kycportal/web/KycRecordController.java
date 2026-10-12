@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import com.kycportal.domain.Status;
 
 @Controller
 public class KycRecordController {
@@ -55,6 +56,30 @@ public class KycRecordController {
         this.history = history;
         this.service = service;
         this.storage = storage;
+    }
+
+    @GetMapping("/records")
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) Status status,
+                       Authentication authentication,
+                       Model model) {
+        AppUser user = prepare(model, authentication);
+        String text = q == null ? "" : q.trim().toLowerCase(Locale.ROOT);
+
+        List<KycRecord> rows = records.findAllWithApplicant().stream()
+            // applicants only ever see their own records
+            .filter(r -> user.getRole() != Role.APPLICANT || r.getApplicant().getId().equals(user.getId()))
+            .filter(r -> text.isEmpty()
+                || r.getFullName().toLowerCase(Locale.ROOT).contains(text)
+                || r.getReferenceNo().toLowerCase(Locale.ROOT).contains(text))
+            .filter(r -> status == null || r.getStatus() == status)
+            .toList();
+
+        model.addAttribute("rows", rows);
+        model.addAttribute("q", q == null ? "" : q);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("statuses", Status.values());
+        return "records/list";
     }
 
     @GetMapping("/records/new")
