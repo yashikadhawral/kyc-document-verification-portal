@@ -19,6 +19,7 @@
           <span class="stage-label" th:text="${s.label}">Submitted</span>
         </li>
       </ol>
+      <p id="total-count" class="muted" th:text="'Total: ' + ${total}">Total: 0</p>
       <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once an applicant submits one.</p>
       <a id="new-application" class="btn" th:if="${user.role.name() == 'APPLICANT'}" th:href="@{/records/new}">Start a new application</a>
     </section>
