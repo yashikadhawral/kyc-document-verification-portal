@@ -15,6 +15,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "kyc_record")
@@ -76,6 +77,11 @@ public class KycRecord {
     @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+        /** The day the record was created, in the server time zone. */
+    public LocalDate getCreatedDate() {
+        return createdAt == null ? null : createdAt.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     /** Shows only the last four characters, for example "******234F". */

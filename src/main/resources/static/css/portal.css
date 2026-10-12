@@ -302,3 +302,16 @@ select:focus, input[type="date"]:focus { border-color: var(--brand); }
   background: var(--brand);
 }
 .timeline-change { display: block; font-weight: 600; }
+
+/* ---------- record list ---------- */
+.toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1rem; margin: 1rem 0 1.5rem; }
+.toolbar .field { margin: 0; }
+.toolbar input[type="text"] { width: 18rem; max-width: 100%; }
+.toolbar select { width: 12rem; }
+.toolbar .btn { margin-top: 0; }
+.table-wrap { overflow-x: auto; }
+.records { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--line); }
+.records th, .records td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--line); }
+.records th { background: #FAFBFC; color: var(--ink-soft); font-size: 0.9rem; font-weight: 600; }
+.records tr:last-child td { border-bottom: 0; }
+.records .ref { font-weight: 600; }
