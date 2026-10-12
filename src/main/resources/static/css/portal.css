@@ -302,3 +302,22 @@ select:focus, input[type="date"]:focus { border-color: var(--brand); }
   background: var(--brand);
 }
 .timeline-change { display: block; font-weight: 600; }
+
+/* ---------- review actions ---------- */
+.actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1rem 2rem; }
+.actions form { margin: 0; }
+.actions .btn { margin-top: 0; }
+.reject-form { max-width: 26rem; }
+.reject-form .btn { margin-top: 0.75rem; }
+.btn-danger { background: var(--rejected); }
+.btn-danger:hover { background: #8E1D17; }
+textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #AEB8C2;
+  border-radius: var(--radius);
+  background: var(--white);
+  font: inherit;
+}
+textarea:focus { border-color: var(--brand); }
