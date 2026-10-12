@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/base :: head('Edit application')}"></head>
+<body>
+<div class="app">
+  <aside th:replace="~{fragments/base :: sidebar('records')}"></aside>
+
+  <main class="content">
+    <header class="page-head">
+      <p class="muted" th:text="'Reference ' + ${record.referenceNo}">Reference</p>
+      <h1>Edit application</h1>
+      <p class="muted" th:if="${record.status.name() == 'REJECTED'}">Saving your changes sends the application back for review.</p>
+    </header>
+
+    <section th:if="${record.status.name() == 'REJECTED' and record.rejectionReason != null}">
+      <h2>Reason for rejection</h2>
+      <p th:text="${record.rejectionReason}">Reason</p>
+    </section>
+
+    <form id="kyc-form" class="form" th:action="@{/records/{id}(id=${record.id})}" th:object="${form}"
+          method="post" enctype="multipart/form-data" novalidate>
+
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" type="text" th:field="*{fullName}" autocomplete="name">
+        <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="dateOfBirth">Date of birth</label>
+        <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}">
+        <p class="field-error" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="idType">ID type</label>
+        <select id="idType" th:field="*{idType}">
+          <option value="">Choose an ID type</option>
+          <option th:each="t : ${idTypes}" th:value="${t.name()}" th:text="${t.label}">PAN card</option>
+        </select>
+        <p class="field-error" th:if="${#fields.hasErrors('idType')}" th:errors="*{idType}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="idNumber">ID number</label>
+        <input id="idNumber" type="text" th:field="*{idNumber}" autocomplete="off">
+        <p class="hint-text">While testing, use dummy numbers only. Never enter a real ID number.</p>
+        <p class="field-error" th:if="${#fields.hasErrors('idNumber')}" th:errors="*{idNumber}">Error</p>
+      </div>
+
+      <div class="field">
+        <label for="document">Replace document (optional)</label>
+        <input id="document" name="document" type="file" accept=".pdf,.jpg,.jpeg,.png">
+        <p class="hint-text" th:text="'Current file: ' + ${record.documentName} + '. Leave empty to keep it.'">Current file</p>
+        <p id="document-error" class="field-error" th:if="${fileError}" th:text="${fileError}">Error</p>
+      </div>
+
+      <div class="form-actions">
+        <button id="save-changes" type="submit" class="btn">Save changes</button>
+        <a class="btn-link" th:href="@{/records/{id}(id=${record.id})}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</div>
+</body>
+</html>

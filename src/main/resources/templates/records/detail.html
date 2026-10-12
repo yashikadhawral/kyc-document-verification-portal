@@ -16,6 +16,37 @@
     <p id="created-message" class="notice info" th:if="${param.created}">
       Application submitted. Keep the reference number to follow its progress.
     </p>
+    <p id="flash-message" class="notice info" th:if="${message}" th:text="${message}">Message</p>
+    <p id="flash-error" class="notice error" role="alert" th:if="${error}" th:text="${error}">Error</p>
+
+    <section th:if="${record.status.name() == 'REJECTED' and record.rejectionReason != null}"
+             aria-labelledby="reason-title">
+      <h2 id="reason-title">Reason for rejection</h2>
+      <p id="rejection-reason" th:text="${record.rejectionReason}">Reason</p>
+    </section>
+
+    <section id="actions" aria-labelledby="actions-title"
+             th:if="${user.role.name() != 'APPLICANT' and (record.status.name() == 'SUBMITTED' or record.status.name() == 'UNDER_REVIEW')}">
+      <h2 id="actions-title">Review</h2>
+      <div class="actions">
+        <form th:if="${record.status.name() == 'SUBMITTED'}" th:action="@{/records/{id}/review(id=${record.id})}" method="post">
+          <button id="start-review" type="submit" class="btn">Start review</button>
+        </form>
+        <form th:if="${record.status.name() == 'UNDER_REVIEW'}" th:action="@{/records/{id}/verify(id=${record.id})}" method="post">
+          <button id="verify-button" type="submit" class="btn">Verify</button>
+        </form>
+        <form class="reject-form" th:if="${record.status.name() == 'UNDER_REVIEW'}" th:action="@{/records/{id}/reject(id=${record.id})}" method="post">
+          <label for="reason">Reason for rejection</label>
+          <textarea id="reason" name="reason" maxlength="500"></textarea>
+          <button id="reject-button" type="submit" class="btn btn-danger">Reject</button>
+        </form>
+      </div>
+    </section>
+
+    <section th:if="${user.role.name() == 'APPLICANT' and (record.status.name() == 'SUBMITTED' or record.status.name() == 'REJECTED')}">
+      <a id="edit-link" class="btn" th:href="@{/records/{id}/edit(id=${record.id})}"
+         th:text="${record.status.name() == 'REJECTED' ? 'Edit and resubmit' : 'Edit application'}">Edit application</a>
+    </section>
 
     <section aria-labelledby="details-title">
       <h2 id="details-title">Details</h2>
@@ -26,6 +57,8 @@
         <dd th:text="${record.idType.label + ' ' + record.maskedIdNumber}">PAN card ******234F</dd>
         <dt>Document</dt>
         <dd th:text="${record.documentName}">document.pdf</dd>
+        <dt th:if="${record.reviewedBy != null}">Reviewer</dt>
+        <dd th:if="${record.reviewedBy != null}" th:text="${record.reviewedBy}">Reviewer</dd>
       </dl>
     </section>
 
