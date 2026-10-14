@@ -64,7 +64,7 @@ Branch names, commit messages and pull request rules are in [docs/branching.md](
 | Stage | Tool | Status |
 |-------|------|--------|
 | Source control | Git and GitHub | In progress |
-| Build and CI | Maven and Jenkins | Planned |
+| Build and CI | Maven and Jenkins | In progress |
 | Continuous testing | Selenium | Planned |
 | Containers | Docker | Planned |
 | Configuration and provisioning | Ansible | Planned |
