@@ -36,10 +36,14 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat 'copy /Y target\\kyc-portal.war "%TOMCAT_WEBAPPS%\\%APP_CONTEXT%.war"'
+                script {
+                    def webapps = params.TOMCAT_WEBAPPS ?: 'C:\\DevTools\\apache-tomcat-10.1.61\\webapps'
+                    def context = params.APP_CONTEXT ?: 'kyc-portal'
+                    echo "Deploying to ${webapps}\\${context}.war"
+                    bat "copy /Y target\\kyc-portal.war \"${webapps}\\${context}.war\""
+                }
             }
         }
-    }
 
     post {
         always {
