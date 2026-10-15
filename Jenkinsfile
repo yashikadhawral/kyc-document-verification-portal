@@ -44,6 +44,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         always {
@@ -51,7 +52,7 @@ pipeline {
         }
         success {
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
-            echo "Deployed: http://localhost:8082/${params.APP_CONTEXT}/"
+            echo "Deployed: http://localhost:8082/${params.APP_CONTEXT ?: 'kyc-portal'}/"
         }
     }
 }
