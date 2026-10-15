@@ -34,6 +34,12 @@ pipeline {
             }
         }
 
+        stage('Selenium Tests') {
+            steps {
+                bat '"%MVN%" -B test -Pselenium'
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
@@ -49,6 +55,7 @@ pipeline {
     post {
         always {
             junit 'target/surefire-reports/*.xml'
+            archiveArtifacts artifacts: 'target/screenshots/*.png', allowEmptyArchive: true
         }
         success {
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
