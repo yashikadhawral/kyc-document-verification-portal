@@ -13,6 +13,8 @@ pipeline {
     environment {
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot'
         MVN = 'C:\\DevTools\\apache-maven-3.9.16-bin\\apache-maven-3.9.16\\bin\\mvn.cmd'
+        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Users\\yo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;${env.PATH}"
+        DOCKER_HOST = 'npipe:////./pipe/dockerDesktopLinuxEngine'
         IMAGE = 'localhost:5000/kyc-portal'
         VERSION = "1.0.${BUILD_NUMBER}"
     }
