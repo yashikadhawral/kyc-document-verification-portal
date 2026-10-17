@@ -13,6 +13,8 @@ pipeline {
     environment {
         JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot'
         MVN = 'C:\\DevTools\\apache-maven-3.9.16-bin\\apache-maven-3.9.16\\bin\\mvn.cmd'
+        IMAGE = 'localhost:5000/kyc-portal'
+        VERSION = "1.0.${BUILD_NUMBER}"
     }
 
     stages {
@@ -50,6 +52,26 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t %IMAGE%:%VERSION% -t %IMAGE%:latest .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                bat 'docker push %IMAGE%:%VERSION%'
+                bat 'docker push %IMAGE%:latest'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                bat 'docker rm -f kyc-portal-ci || exit /b 0'
+                bat 'docker run -d --name kyc-portal-ci -p 8091:8085 %IMAGE%:%VERSION%'
+            }
+        }
     }
 
     post {
@@ -59,7 +81,8 @@ pipeline {
         }
         success {
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
-            echo "Deployed: http://localhost:8082/${params.APP_CONTEXT ?: 'kyc-portal'}/"
+            echo "Tomcat: http://localhost:8082/${params.APP_CONTEXT ?: 'kyc-portal'}/"
+            echo "Container: http://localhost:8091/ (image ${env.IMAGE}:${env.VERSION})"
         }
     }
 }
