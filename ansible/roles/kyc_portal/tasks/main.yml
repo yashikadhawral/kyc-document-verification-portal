@@ -36,3 +36,9 @@
   retries: 12
   delay: 5
   until: health.status == 200
+
+- ansible.builtin.import_tasks: provision.yml
+  tags: [provision]
+
+- ansible.builtin.import_tasks: deploy.yml
+  tags: [deploy]
