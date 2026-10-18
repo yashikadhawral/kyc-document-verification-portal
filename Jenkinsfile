@@ -75,7 +75,9 @@ pipeline {
             }
         }
         stage('Provision with Ansible') {
+            agent { label 'wsl' }
             steps {
+                checkout scm
                 script {
                     def ws = env.WORKSPACE.replace('\\', '/')
                     def wslWs = "/mnt/" + ws.substring(0, 1).toLowerCase() + ws.substring(2)
