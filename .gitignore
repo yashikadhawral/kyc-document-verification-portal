@@ -24,6 +24,7 @@ logs/
 .settings/
 .DS_Store
 Thumbs.db
+docker-command-log.txt
 
 # Secrets
 .env
