@@ -3,5 +3,4 @@
   tags: [provision]
 
 - ansible.builtin.import_tasks: deploy.yml
-  tags: [deploy]git push
-  
+  tags: [deploy]
