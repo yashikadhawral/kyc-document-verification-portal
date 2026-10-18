@@ -74,6 +74,15 @@ pipeline {
                 bat 'docker run -d --name kyc-portal-ci -p 8091:8085 %IMAGE%:%VERSION%'
             }
         }
+        stage('Provision with Ansible') {
+            steps {
+                script {
+                    def ws = env.WORKSPACE.replace('\\', '/')
+                    def wslWs = "/mnt/" + ws.substring(0, 1).toLowerCase() + ws.substring(2)
+                    bat "wsl -d Ubuntu -u root -- bash -lc \"cd '${wslWs}/ansible' && ansible-playbook -i inventory.ini site.yml -e image_tag=${env.VERSION}\""
+                }
+            }
+        }
     }
 
     post {
@@ -85,6 +94,7 @@ pipeline {
             archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             echo "Tomcat: http://localhost:8082/${params.APP_CONTEXT ?: 'kyc-portal'}/"
             echo "Container: http://localhost:8091/ (image ${env.IMAGE}:${env.VERSION})"
+            echo "Ansible node: http://localhost:8092/ (image ${env.IMAGE}:${env.VERSION})"
         }
     }
 }
