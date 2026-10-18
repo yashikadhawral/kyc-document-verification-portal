@@ -1,0 +1,7 @@
+---
+app_name: kyc-portal
+image_repo: localhost:5000/kyc-portal
+image_tag: "1.0.11"
+host_port: 8092
+container_port: 8085
+health_path: /

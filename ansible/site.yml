@@ -1,0 +1,6 @@
+---
+- name: Configure KYC portal host
+  hosts: kyc_servers
+  become: true
+  roles:
+    - kyc_portal
