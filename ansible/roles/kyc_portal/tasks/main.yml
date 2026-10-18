@@ -1,44 +1,7 @@
 ---
-- name: Ensure required packages are present
-  ansible.builtin.apt:
-    name:
-      - python3-docker
-      - curl
-    state: present
-    update_cache: true
-
-- name: Create application directory
-  ansible.builtin.file:
-    path: "/opt/{{ app_name }}"
-    state: directory
-    mode: "0755"
-
-- name: Pull the portal image
-  community.docker.docker_image:
-    name: "{{ image_repo }}"
-    tag: "{{ image_tag }}"
-    source: pull
-
-- name: Run the portal container
-  community.docker.docker_container:
-    name: "{{ app_name }}-ansible"
-    image: "{{ image_repo }}:{{ image_tag }}"
-    state: started
-    restart_policy: unless-stopped
-    published_ports:
-      - "{{ host_port }}:{{ container_port }}"
-
-- name: Wait for the portal to respond
-  ansible.builtin.uri:
-    url: "http://localhost:{{ host_port }}{{ health_path }}"
-    status_code: 200
-  register: health
-  retries: 12
-  delay: 5
-  until: health.status == 200
-
 - ansible.builtin.import_tasks: provision.yml
   tags: [provision]
 
 - ansible.builtin.import_tasks: deploy.yml
-  tags: [deploy]
+  tags: [deploy]git push
+  
