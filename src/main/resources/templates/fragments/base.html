@@ -10,22 +10,39 @@
   <link rel="stylesheet" th:href="@{/css/portal.css}">
 </head>
 <body>
-<aside class="sidebar" th:fragment="sidebar(active)">
-  <div class="brand">
-    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M7 3h14l6 6v20H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M11 18l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span>KYC Portal</span>
+<aside class="sidebar" th:fragment="sidebar(active)" th:classappend="${'role-' + user.role.name().toLowerCase()}">
+  <div>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7 3h14l6 6v20H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M11 18l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>KYC Portal</span>
+    </div>
+    <div class="portal-name" th:text="${user.role.name() == 'APPLICANT'} ? 'Applicant portal' : (${user.role.name() == 'VERIFIER'} ? 'Review desk' : 'Admin console')">Applicant portal</div>
   </div>
   <nav aria-label="Main">
-    <a id="nav-new" class="nav-link" th:if="${user.role.name() == 'APPLICANT'}" th:href="@{/records/new}" th:classappend="${active == 'new'} ? 'is-active'">New application</a>
-    <a id="nav-records" class="nav-link" th:href="@{/records}" th:classappend="${active == 'records'} ? 'is-active'" th:text="${user.role.name() == 'APPLICANT'} ? 'My applications' : 'All applications'">Applications</a>
-    <a id="nav-overview" class="nav-link" th:href="@{/}" th:classappend="${active == 'overview'} ? 'is-active'">Overview</a>
+    <a id="nav-new" class="nav-link" th:if="${user.role.name() == 'APPLICANT'}" th:href="@{/records/new}" th:classappend="${active == 'new'} ? 'is-active'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      <span>New application</span>
+    </a>
+    <a id="nav-records" class="nav-link" th:href="@{/records}" th:classappend="${active == 'records'} ? 'is-active'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      <span th:text="${user.role.name() == 'APPLICANT'} ? 'My applications' : 'All applications'">Applications</span>
+    </a>
+    <a id="nav-overview" class="nav-link" th:href="@{/}" th:classappend="${active == 'overview'} ? 'is-active'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+      <span th:text="${user.role.name() == 'APPLICANT'} ? 'My dashboard' : (${user.role.name() == 'VERIFIER'} ? 'Review desk' : 'Control room')">Overview</span>
+    </a>
   </nav>
   <div class="who">
-    <div id="current-user" class="who-name" th:text="${user.fullName}">Full name</div>
-    <div id="current-role" class="who-role" th:text="${roleLabel}">Role</div>
+    <div class="who-row">
+      <span class="avatar" th:text="${#strings.substring(user.fullName, 0, 1)}">A</span>
+      <div>
+        <div id="current-user" class="who-name" th:text="${user.fullName}">Full name</div>
+        <div id="current-role" class="who-role" th:text="${roleLabel}">Role</div>
+      </div>
+    </div>
     <form th:action="@{/logout}" method="post">
       <button id="logout-button" type="submit" class="link-button">Sign out</button>
     </form>

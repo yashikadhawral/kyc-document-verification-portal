@@ -13,20 +13,31 @@
     </div>
     <h1>Check identity documents, one stage at a time.</h1>
     <p>Applicants submit. Verifiers review. Every decision is recorded.</p>
+    <ul class="auth-points">
+      <li>Access that depends on your role</li>
+      <li>A full status history for every application</li>
+      <li>ID numbers masked on screen</li>
+    </ul>
+    <svg class="auth-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+      <path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z"/>
+      <path d="M8.5 12l2.5 2.5 4.5-5"/>
+    </svg>
   </section>
 
   <section class="auth-form">
-    <h2>Sign in</h2>
-    <p id="login-error" class="notice error" role="alert" th:if="${param.error}">Wrong username or password. Check both and try again.</p>
-    <p id="logout-message" class="notice info" th:if="${param.logout}">You have signed out.</p>
-    <form th:action="@{/login}" method="post">
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" autocomplete="username" required autofocus>
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" required>
-      <button id="login-button" type="submit" class="btn">Sign in</button>
-    </form>
-    <p class="hint">Demo accounts: applicant1, verifier1, admin1</p>
+    <div class="auth-card">
+      <h2>Sign in</h2>
+      <p id="login-error" class="notice error" role="alert" th:if="${param.error}">Wrong username or password. Check both and try again.</p>
+      <p id="logout-message" class="notice info" th:if="${param.logout}">You have signed out.</p>
+      <form th:action="@{/login}" method="post">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button id="login-button" type="submit" class="btn">Sign in</button>
+      </form>
+      <p class="hint">Demo accounts: applicant1, verifier1, admin1</p>
+    </div>
   </section>
 </div>
 </body>

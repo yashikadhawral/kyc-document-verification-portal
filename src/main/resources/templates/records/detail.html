@@ -11,6 +11,11 @@
       <h1 th:text="${record.fullName}">Full name</h1>
       <span id="status-stamp" class="stamp" th:classappend="${'stamp-' + record.status.cssKey}"
             th:text="${record.status.label}">Submitted</span>
+      <ol id="tracker" class="tracker">
+        <li class="done"><span>Submitted</span></li>
+        <li th:class="${record.status.name() == 'SUBMITTED'} ? '' : (${record.status.name() == 'UNDER_REVIEW'} ? 'current' : 'done')"><span>Under review</span></li>
+        <li th:class="${record.status.name() == 'VERIFIED'} ? 'done done-ok' : (${record.status.name() == 'REJECTED'} ? 'done done-bad' : '')"><span th:text="${record.status.name() == 'REJECTED'} ? 'Rejected' : 'Verified'">Verified</span></li>
+      </ol>
     </header>
 
     <p id="created-message" class="notice info" th:if="${param.created}">

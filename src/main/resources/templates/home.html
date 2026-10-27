@@ -7,32 +7,180 @@
 
   <main class="content">
     <header class="page-head">
+      <span class="role-chip" th:text="${roleLabel}">Role</span>
       <h1 id="welcome" th:text="'Welcome, ' + ${user.fullName}">Welcome</h1>
-      <p class="muted" th:text="'Signed in as ' + ${roleLabel}">Signed in as Role</p>
+      <p class="muted" th:if="${user.role.name() == 'APPLICANT'}">Track your KYC applications and see what to do next.</p>
+      <p class="muted" th:if="${user.role.name() == 'VERIFIER'}"
+         th:text="${waitingCount} + ' waiting for review, ' + ${inReviewCount} + ' in progress'">0 waiting for review</p>
+      <p class="muted" th:if="${user.role.name() == 'ADMIN'}">Applications, users and recent activity across the portal.</p>
     </header>
 
-    <section aria-labelledby="stages-title">
-      <h2 id="stages-title">Applications by stage</h2>
-      <ol id="stage-strip" class="stages">
-        <li th:each="s : ${stages}" class="stage" th:classappend="${'stage-' + s.key}">
-          <span class="stage-count" th:text="${s.count}">0</span>
-          <span class="stage-label" th:text="${s.label}">Submitted</span>
-        </li>
-      </ol>
-      <p id="total-count" class="muted" th:text="'Total: ' + ${total}">Total: 0</p>
-      <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once an applicant submits one.</p>
-      <a id="new-application" class="btn" th:if="${user.role.name() == 'APPLICANT'}" th:href="@{/records/new}">Start a new application</a>
-    </section>
+    <!-- ===================== APPLICANT ===================== -->
+    <th:block th:if="${user.role.name() == 'APPLICANT'}">
+      <section class="next-step" th:classappend="${rejectedRecord != null} ? 'next-step-alert'" aria-labelledby="next-title">
+        <th:block th:if="${rejectedRecord != null}">
+          <h2 id="next-title">Action needed</h2>
+          <p th:text="'Application ' + ${rejectedRecord.referenceNo} + ' was rejected.'">Application was rejected.</p>
+          <p class="muted" th:if="${rejectedRecord.rejectionReason != null}" th:text="'Reason: ' + ${rejectedRecord.rejectionReason}">Reason</p>
+          <a class="btn" th:href="@{/records/{id}/edit(id=${rejectedRecord.id})}">Edit and resubmit</a>
+        </th:block>
+        <th:block th:if="${rejectedRecord == null and total == 0}">
+          <h2 id="next-title">Start your KYC application</h2>
+          <p class="muted">Enter your details as they appear on your ID and attach a clear copy of the document.</p>
+        </th:block>
+        <th:block th:if="${rejectedRecord == null and total > 0}">
+          <h2 id="next-title">Nothing needs your attention</h2>
+          <p class="muted">Open an application below to follow its progress and see any decision.</p>
+        </th:block>
+        <a id="new-application" class="btn btn-light" th:href="@{/records/new}">Start a new application</a>
+      </section>
 
-    <section aria-labelledby="system-title">
-      <h2 id="system-title">System check</h2>
-      <dl class="facts">
-        <dt>Database</dt>
-        <dd id="db-status">Connected, <span th:text="${userCount}">3</span> user accounts</dd>
-        <dt>Health endpoint</dt>
-        <dd><a id="health-link" th:href="@{/actuator/health}">/actuator/health</a></dd>
-      </dl>
-    </section>
+      <section aria-labelledby="mine-title">
+        <h2 id="mine-title">My applications</h2>
+        <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once you submit one.</p>
+        <div class="app-cards" th:unless="${myRecords.isEmpty()}">
+          <a class="app-card" th:each="r : ${myRecords}" th:href="@{/records/{id}(id=${r.id})}">
+            <span class="app-card-ref" th:text="${r.referenceNo}">KYC-2026-0001</span>
+            <span class="app-card-name" th:text="${r.fullName}">Full name</span>
+            <span class="muted" th:text="${r.idType.label + ', submitted ' + r.createdDate}">PAN card, submitted 01 Jan 2026</span>
+            <span class="stamp" th:classappend="${'stamp-' + r.status.cssKey}" th:text="${r.status.label}">Submitted</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="plain-section" aria-labelledby="stages-title">
+        <h2 id="stages-title">My applications by stage</h2>
+        <ol id="stage-strip" class="stages">
+          <li th:each="s : ${stages}" class="stage" th:classappend="${'stage-' + s.key}">
+            <span class="stage-count" th:text="${s.count}">0</span>
+            <span class="stage-label" th:text="${s.label}">Submitted</span>
+            <span class="stage-bar"><span class="stage-fill" th:style="'width:' + ${total > 0 ? s.count * 100 / total : 0} + '%'"></span></span>
+          </li>
+        </ol>
+        <p id="total-count" class="muted" th:text="'Total: ' + ${total}">Total: 0</p>
+      </section>
+
+      <section aria-labelledby="before-title">
+        <h2 id="before-title">Before you apply</h2>
+        <ul class="checklist">
+          <li>Use your name and date of birth exactly as they appear on your ID.</li>
+          <li>Attach a clear PDF, JPG or PNG file, up to 5 MB.</li>
+          <li>While testing, use dummy ID numbers only.</li>
+        </ul>
+      </section>
+    </th:block>
+
+    <!-- ===================== VERIFIER ===================== -->
+    <th:block th:if="${user.role.name() == 'VERIFIER'}">
+      <section class="plain-section" aria-labelledby="stages-title">
+        <h2 id="stages-title">Queue by stage</h2>
+        <ol id="stage-strip" class="stages">
+          <li th:each="s : ${stages}" class="stage" th:classappend="${'stage-' + s.key}">
+            <span class="stage-count" th:text="${s.count}">0</span>
+            <span class="stage-label" th:text="${s.label}">Submitted</span>
+            <span class="stage-bar"><span class="stage-fill" th:style="'width:' + ${total > 0 ? s.count * 100 / total : 0} + '%'"></span></span>
+          </li>
+        </ol>
+        <p id="total-count" class="muted" th:text="'Total: ' + ${total}">Total: 0</p>
+        <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once an applicant submits one.</p>
+      </section>
+
+      <section aria-labelledby="queue-title">
+        <h2 id="queue-title">Work queue</h2>
+        <p class="muted" th:if="${approvalRate != null}" th:text="'Approval rate so far: ' + ${approvalRate} + '%'">Approval rate</p>
+        <p class="empty" th:if="${queue.isEmpty()}">The queue is clear. New submissions will appear here.</p>
+        <div class="table-wrap" th:unless="${queue.isEmpty()}">
+          <table id="queue-table" class="records">
+            <thead>
+              <tr><th>Reference</th><th>Applicant</th><th>ID type</th><th>Submitted</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${queue}">
+                <td class="ref" th:text="${r.referenceNo}">KYC-2026-0001</td>
+                <td th:text="${r.applicant.fullName}">Applicant</td>
+                <td th:text="${r.idType.label}">PAN card</td>
+                <td th:text="${r.createdDate}">2026-01-01</td>
+                <td><span class="stamp" th:classappend="${'stamp-' + r.status.cssKey}" th:text="${r.status.label}">Submitted</span></td>
+                <td><a class="btn btn-small" th:href="@{/records/{id}(id=${r.id})}">Open</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="check-title">
+        <h2 id="check-title">Review checklist</h2>
+        <ul class="checklist">
+          <li>The name and date of birth match the document.</li>
+          <li>The document is clear and complete.</li>
+          <li>The ID number fits the selected ID type.</li>
+          <li>Always give a reason when you reject an application.</li>
+        </ul>
+      </section>
+    </th:block>
+
+    <!-- ===================== ADMIN ===================== -->
+    <th:block th:if="${user.role.name() == 'ADMIN'}">
+      <section class="plain-section" aria-labelledby="stages-title">
+        <h2 id="stages-title">All applications by stage</h2>
+        <ol id="stage-strip" class="stages">
+          <li th:each="s : ${stages}" class="stage" th:classappend="${'stage-' + s.key}">
+            <span class="stage-count" th:text="${s.count}">0</span>
+            <span class="stage-label" th:text="${s.label}">Submitted</span>
+            <span class="stage-bar"><span class="stage-fill" th:style="'width:' + ${total > 0 ? s.count * 100 / total : 0} + '%'"></span></span>
+          </li>
+        </ol>
+        <p id="total-count" class="muted" th:text="'Total: ' + ${total}">Total: 0</p>
+        <p id="empty-message" class="empty" th:if="${total == 0}">No applications yet. They will appear here once an applicant submits one.</p>
+        <div class="kpis">
+          <div class="kpi"><span class="kpi-value" th:text="${total}">0</span><span class="kpi-label">Total applications</span></div>
+          <div class="kpi"><span class="kpi-value" th:text="${approvalRate != null} ? ${approvalRate} + '%' : '-'">-</span><span class="kpi-label">Approval rate</span></div>
+          <div class="kpi"><span class="kpi-value" th:text="${userCount}">3</span><span class="kpi-label">User accounts</span></div>
+          <div class="kpi"><span class="kpi-value" th:text="${waitingCount + inReviewCount}">0</span><span class="kpi-label">Open in the queue</span></div>
+        </div>
+      </section>
+
+      <div class="split">
+        <section aria-labelledby="audit-title">
+          <h2 id="audit-title">Audit trail</h2>
+          <p class="empty" th:if="${activity.isEmpty()}">No activity yet.</p>
+          <ol class="timeline" th:unless="${activity.isEmpty()}">
+            <li th:each="a : ${activity}">
+              <span class="timeline-change"><a th:href="@{/records/{id}(id=${a.recordId})}" th:text="${a.reference}">KYC-2026-0001</a> <span th:text="${a.change}">Submitted</span></span>
+              <span class="muted" th:text="${a.when + ' by ' + a.by}">01 Jan 2026, 10:00 by applicant1</span>
+              <span class="muted" th:if="${a.note}" th:text="${a.note}">Note</span>
+            </li>
+          </ol>
+        </section>
+
+        <section aria-labelledby="users-title">
+          <h2 id="users-title">Users and roles</h2>
+          <div class="table-wrap">
+            <table class="records">
+              <thead><tr><th>Name</th><th>Username</th><th>Role</th></tr></thead>
+              <tbody>
+                <tr th:each="u : ${userList}">
+                  <td th:text="${u.fullName}">Full name</td>
+                  <td th:text="${u.username}">username</td>
+                  <td><span class="role-pill" th:classappend="${'role-pill-' + u.role.name().toLowerCase()}" th:text="${u.role.label}">Role</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted" th:text="${applicantCount} + ' applicants, ' + ${verifierCount} + ' verifiers, ' + ${adminCount} + ' admins'">Counts</p>
+        </section>
+      </div>
+
+      <section aria-labelledby="system-title">
+        <h2 id="system-title">System check</h2>
+        <dl class="facts">
+          <dt>Database</dt>
+          <dd id="db-status">Connected, <span th:text="${userCount}">3</span> user accounts</dd>
+          <dt>Health endpoint</dt>
+          <dd><a id="health-link" th:href="@{/actuator/health}">/actuator/health</a></dd>
+        </dl>
+      </section>
+    </th:block>
   </main>
 </div>
 </body>
